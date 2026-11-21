@@ -11,15 +11,15 @@
     "chat.deepseek.com"
   ],
   "license": "MIT",
-  "author": "qmh4514",
+  "author": "Muhan-Q",
   "icon": "./icon.svg",
-  "homepage": "https://github.com/qmh4514/dsh-chat-switch#readme",
+  "homepage": "https://github.com/Muhan-Q/dsh-chat-switch#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qmh4514/dsh-chat-switch.git"
+    "url": "git+https://github.com/Muhan-Q/dsh-chat-switch.git"
   },
   "bugs": {
-    "url": "https://github.com/qmh4514/dsh-chat-switch/issues"
+    "url": "https://github.com/Muhan-Q/dsh-chat-switch/issues"
   },
   "type": "module",
   "main": "lib/index.js",

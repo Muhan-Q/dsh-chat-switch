@@ -1,5 +1,7 @@
 # dsh-chat-switch
 
+> 仓库 / Repository: <https://github.com/Muhan-Q/dsh-chat-switch>
+>
 > **运行环境 / Tested on**
 >
 > - ✅ **已验证**：华为鸿蒙系统手机上的 **DSHM**（DeepSeek Harness 端侧应用，Host `0.2.2-rc.5+dshm.1`，ArkWeb WebView 内核）。
