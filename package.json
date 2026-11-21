@@ -68,5 +68,9 @@
     "macOS / Linux desktop DSH",
     "Android phone DSH",
     "iOS phone DSH"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }
