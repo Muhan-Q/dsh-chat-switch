@@ -17,6 +17,14 @@
 
 登录态复用同一个 DeepSeek 账号：一次把 chat.deepseek.com 的 `userToken` 交给插件，Host 侧保存（0600），之后所有目录 / 消息请求都由 Host 代发，浏览器端不受 CORS 限制，token 也不会回传到页面。
 
+## 截图
+
+| Harness（未切换）左侧栏 | Chat 模式主视图 | Chat 模式左侧栏 |
+| --- | --- | --- |
+| ![Harness sidebar](docs/screenshots/01-harness-sidebar.jpg) | ![Chat main view](docs/screenshots/02-chat-main.jpg) | ![Chat sidebar](docs/screenshots/03-chat-sidebar.jpg) |
+
+> 三张图都截自同一台鸿蒙手机（DSHM）：切到 Chat 后，左侧栏的工作区位置被 chat.deepseek.com 的对话目录取代，主列变成可对话的聊天界面；切回 Harness 则恢复原样。
+
 ## 结构
 
 ```
