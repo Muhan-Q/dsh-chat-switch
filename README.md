@@ -1,5 +1,13 @@
 # dsh-chat-switch
 
+> **运行环境 / Tested on**
+>
+> - ✅ **已验证**：华为鸿蒙系统手机上的 **DSHM**（DeepSeek Harness 端侧应用，Host `0.2.2-rc.5+dshm.1`，ArkWeb WebView 内核）。
+> - ⚠️ **未验证**：Windows 版 DSH、macOS / Linux 桌面版 DSH，以及其他系统（Android / iOS）的手机版 dsh —— 均未在任何一台设备上实测。
+>
+> 插件按「Host 只做 HTTP 转发 + 页面内算工作量证明 + 不依赖原生模块」的方式实现，理论上跨平台可用；但 UI 槽位、抽屉行为与 PoW 的 WebAssembly 执行都只在上面那台鸿蒙手机上跑通过，其它平台请自行验证。
+
+
 在 DSH 主界面左侧栏顶部加一个 **Chat ⇄ Harness** 切换器：
 
 - **Harness**（默认）：原样使用工作区 / 会话浏览区，一切照旧。

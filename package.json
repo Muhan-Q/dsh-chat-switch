@@ -1,8 +1,15 @@
 {
   "name": "dsh-chat-switch",
   "version": "0.2.0",
-  "description": "Chat ⇄ Harness switch in the DSH sidebar: drives the chat.deepseek.com web account (conversation directory, streaming chat, thinking, web search, attachments) in place of the workspace region",
-  "keywords": ["dsh", "dsh-plugin", "deepseek", "chat", "sidebar", "chat.deepseek.com"],
+  "description": "Chat ⇄ Harness switch in the DSH sidebar with a chat.deepseek.com bridge (verified on HarmonyOS phones running DSHM; Windows and other platforms untested)",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "chat",
+    "sidebar",
+    "chat.deepseek.com"
+  ],
   "license": "MIT",
   "author": "qmh4514",
   "icon": "./icon.svg",
@@ -37,11 +44,29 @@
       ]
     }
   },
-  "files": ["lib", "src", "assets", "docs", "icon.svg", "README.md", "LICENSE", "cordis.patch.yml"],
+  "files": [
+    "lib",
+    "src",
+    "assets",
+    "docs",
+    "icon.svg",
+    "README.md",
+    "LICENSE",
+    "cordis.patch.yml"
+  ],
   "scripts": {
     "check": "node --check lib/index.js && node --check lib/client.js"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "verifiedOn": [
+    "Huawei HarmonyOS phone · DSHM (DeepSeek Harness on-device, host 0.2.2-rc.5+dshm.1, ArkWeb WebView)"
+  ],
+  "unverifiedOn": [
+    "Windows DSH",
+    "macOS / Linux desktop DSH",
+    "Android phone DSH",
+    "iOS phone DSH"
+  ]
 }
