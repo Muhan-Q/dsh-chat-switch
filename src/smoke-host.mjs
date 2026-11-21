@@ -1,7 +1,7 @@
 // Host-half smoke test: boots the plugin against a bare ctx, mounts its route
 // on a throwaway server, and exercises the JSON API end to end.
 import { createServer } from 'node:http'
-import { apply } from '/storage/Users/currentUser/Documents/DSH/dsh-chat-switch/lib/index.js'
+import { apply } from '../lib/index.js'
 
 let route
 const disposers = []

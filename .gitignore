@@ -1,6 +1,12 @@
 node_modules/
+# Windows reserved-name device node left behind by a `> CON` redirect
+CON
 .tmp/
 .research/
+# handover bundle: raw session transcript, may contain live credentials
+.handover/
+# internal handover note (packaging/credential reminders), not part of the package
+HANDOVER.md
 *.log
 .DS_Store
 # captured third-party front-end bundles (reference only, not redistributed)

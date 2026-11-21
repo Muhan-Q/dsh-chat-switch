@@ -1,7 +1,7 @@
 {
   "name": "dsh-chat-switch",
-  "version": "0.2.1",
-  "description": "Chat ⇄ Harness switch in the DSH sidebar with a chat.deepseek.com bridge (verified on HarmonyOS phones running DSHM; Windows and other platforms untested)",
+  "version": "0.2.2",
+  "description": "Chat ⇄ Harness switch in the DSH sidebar with a chat.deepseek.com bridge",
   "keywords": [
     "dsh",
     "dsh-plugin",
@@ -61,15 +61,6 @@
   "engines": {
     "node": ">=20"
   },
-  "verifiedOn": [
-    "Huawei HarmonyOS phone · DSHM (DeepSeek Harness on-device, host 0.2.2-rc.5+dshm.1, ArkWeb WebView)"
-  ],
-  "unverifiedOn": [
-    "Windows DSH",
-    "macOS / Linux desktop DSH",
-    "Android phone DSH",
-    "iOS phone DSH"
-  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
