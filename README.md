@@ -38,7 +38,30 @@ dsh-chat-switch/
 └── docs/notes-chat-api.md# 网页端接口记录（端点 / 头 / 响应字段）
 ```
 
-## 安装（DSHM 端侧）
+## 安装
+
+### 从 npm 安装（推荐，任何设备都能用）
+
+DSHM → **设置 → 插件 → 添加插件** → 输入 `dsh-chat-switch` → 安装 → 重启 DSHM。
+
+命令行等价：
+
+```sh
+pnpm add dsh-chat-switch
+```
+
+npm 地址：<https://www.npmjs.com/package/dsh-chat-switch>
+
+### 从 GitHub 安装
+
+在「添加插件」里填完整形式（换掉裸包名就能绕过 npm 未索引的问题）：
+
+```
+github.com/Muhan-Q/dsh-chat-switch#v0.2.0
+```
+
+### 本地目录安装（开发用）
+
 
 ```sh
 sh install.sh

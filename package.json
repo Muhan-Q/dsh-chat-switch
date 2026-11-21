@@ -1,6 +1,6 @@
 {
   "name": "dsh-chat-switch",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Chat ⇄ Harness switch in the DSH sidebar with a chat.deepseek.com bridge (verified on HarmonyOS phones running DSHM; Windows and other platforms untested)",
   "keywords": [
     "dsh",
@@ -48,11 +48,12 @@
     "lib",
     "src",
     "assets",
-    "docs",
     "icon.svg",
     "README.md",
     "LICENSE",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "docs/notes-chat-api.md",
+    "docs/screenshots"
   ],
   "scripts": {
     "check": "node --check lib/index.js && node --check lib/client.js"
