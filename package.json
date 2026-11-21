@@ -1,0 +1,47 @@
+{
+  "name": "dsh-chat-switch",
+  "version": "0.2.0",
+  "description": "Chat ⇄ Harness switch in the DSH sidebar: drives the chat.deepseek.com web account (conversation directory, streaming chat, thinking, web search, attachments) in place of the workspace region",
+  "keywords": ["dsh", "dsh-plugin", "deepseek", "chat", "sidebar", "chat.deepseek.com"],
+  "license": "MIT",
+  "author": "qmh4514",
+  "icon": "./icon.svg",
+  "homepage": "https://github.com/qmh4514/dsh-chat-switch#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qmh4514/dsh-chat-switch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qmh4514/dsh-chat-switch/issues"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./icon": "./icon.svg",
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-renderer"
+      ]
+    }
+  },
+  "files": ["lib", "src", "assets", "docs", "icon.svg", "README.md", "LICENSE", "cordis.patch.yml"],
+  "scripts": {
+    "check": "node --check lib/index.js && node --check lib/client.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

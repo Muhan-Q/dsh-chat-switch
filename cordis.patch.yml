@@ -1,0 +1,6 @@
+# Install this row in a profile's cordis.patch.yml.
+# The package must be resolvable from the profile directory (e.g. copied into
+# <profile>/node_modules/dsh-chat-switch, see install.sh).
+- insert:
+    - id: chat-switch
+      name: dsh-chat-switch

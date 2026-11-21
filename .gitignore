@@ -1,0 +1,10 @@
+node_modules/
+.tmp/
+.research/
+*.log
+.DS_Store
+# captured third-party front-end bundles (reference only, not redistributed)
+docs/chat-main.js
+docs/chat-index.html
+docs/deepseek-driver.umd.js
+docs/sse-*.json
