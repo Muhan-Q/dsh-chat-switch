@@ -193,12 +193,15 @@ const heroClasses = classNames(ChatMain())
 console.log('hero surface:', ['csx-hero', 'csx-hero-card'].every(name => heroClasses.includes(name)) ? 'ok' : 'MISSING ' + heroClasses.join(','))
 const heroCard = Composer({ variant: 'hero' })
 const heroCardClasses = classNames(heroCard)
-const heroLabels = texts(heroCard)
-console.log('hero card:', heroCardClasses.includes('csx-card') ? 'ok' : 'MISSING csx-card',
-  '| tools:', ['◇ 深度思考', '🌐 智能搜索'].every(label => heroLabels.includes(label)) ? 'ok' : 'MISSING tools')
 const expandedHero = expandFns(heroCard)
-const expandedLabels = texts(expandedHero)
-console.log('hero send:', expandedLabels.includes('↑') ? 'ok' : 'MISSING send')
+const heroLabels = texts(expandedHero)
+const iconSvgs = flatten(expandedHero)
+  .filter(entry => entry !== null && typeof entry === 'object' && typeof entry.props?.dangerouslySetInnerHTML?.__html === 'string'
+    && entry.props.dangerouslySetInnerHTML.__html.includes('<svg'))
+console.log('hero card:', heroCardClasses.includes('csx-card') ? 'ok' : 'MISSING csx-card',
+  '| tools:', ['深度思考', '智能搜索'].every(label => heroLabels.some(text => text.includes(label))) ? 'ok' : 'MISSING tools')
+console.log('hero icons:', iconSvgs.length >= 4 ? `ok (${iconSvgs.length} glyphs)` : `MISSING glyphs (${iconSvgs.length})`,
+  '| hero mark:', classNames(expandFns(ChatMain())).includes('csx-hero-mark') ? 'ok' : 'MISSING whale')
 
 chatStore.set({
   messages: [
@@ -215,7 +218,20 @@ const noteText = texts(assistantRow)
 console.log('message footer:',
   flatAssistant.some(entry => entry !== null && typeof entry === 'object' && entry.props != null && entry.props.className === 'csx-sources') ? 'sources ok' : 'MISSING sources',
   '|', noteText.includes('1 个网页') ? 'count ok' : 'MISSING count',
+  '|', flatAssistant.some(entry => entry !== null && typeof entry === 'object'
+    && entry.props?.className === 'csx-src-favicon' && String(entry.props.src).endsWith('/favicon.ico')) ? 'favicon ok' : 'MISSING favicon',
   '|', noteText.includes('内容由 AI 生成，请仔细甄别') ? 'note ok' : 'MISSING note')
+
+const actionButtons = flatten(expandFns(assistantRow)).filter(entry => entry !== null && typeof entry === 'object'
+  && entry.props?.className === 'csx-act')
+const actionTitles = actionButtons.map(entry => entry.props['aria-label']).join(',')
+console.log('answer actions:',
+  actionButtons.length === 4 ? 'ok (4)' : `MISSING (${actionButtons.length})`,
+  '|', ['复制', '重新生成', '朗读', '分享'].every(label => actionTitles.includes(label)) ? 'labels ok' : `MISSING ${actionTitles}`,
+  '|', actionButtons.filter(entry => flatten(entry).some(child => child !== null && typeof child === 'object'
+    && typeof child.props?.dangerouslySetInnerHTML?.__html === 'string')).length === 4 ? 'glyphs ok' : 'MISSING glyphs',
+  '|', !flatten(expandFns(MessageRow({ message: chatStore.get().messages[1], streaming: true })))
+    .some(entry => entry !== null && typeof entry === 'object' && entry.props?.className === 'csx-actions') ? 'hidden while streaming' : 'shown while streaming')
 
 for (const dispose of effects) dispose()
 console.log('styles after dispose:', styleCount)
