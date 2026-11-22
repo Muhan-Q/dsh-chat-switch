@@ -152,6 +152,71 @@ try {
   console.log('markdown FAIL', error)
 }
 
+// The Chat surface renders in both shapes: a centred hero card when empty,
+// and the web-style column plus a docked card once there are messages.
+const { store: chatStore, Composer, ChatMain, MessageRow } = mod.exports.__internals
+const flatten = node => {
+  if (node === null || node === undefined || typeof node !== 'object') return []
+  if (Array.isArray(node)) return node.flatMap(flatten)
+  return [node, ...flatten(node.children)]
+}
+const classNames = node => flatten(node)
+  .filter(entry => entry !== null && typeof entry === 'object' && entry.props != null && typeof entry.props.className === 'string')
+  .map(entry => entry.props.className)
+const texts = node => flatten(node)
+  .filter(entry => entry !== null && typeof entry === 'object' && Array.isArray(entry.children))
+  .map(entry => entry.children.filter(child => typeof child === 'string').join(''))
+  .filter(text => text !== '')
+// Shallow-expands plain function components (Composer's SendButton) for assertions.
+const expandFns = node => {
+  if (node === null || node === undefined) return []
+  if (Array.isArray(node)) return node.flatMap(expandFns)
+  if (typeof node !== 'object') return []
+  const type = node.type
+  const isPlainFn = typeof type === 'function' && Object.getOwnPropertyNames(type.prototype ?? {}).length <= 1
+  if (isPlainFn) return expandFns(type(node.props ?? {}))
+  return [{
+    ...node,
+    children: (Array.isArray(node.children) ? node.children : [])
+      .flatMap(child => (typeof child === 'string' ? [child] : expandFns(child))),
+  }]
+}
+
+chatStore.set({
+  status: { signedIn: true, chatOrigin: 'https://chat.deepseek.com' },
+  messages: [],
+  messagesLoading: false,
+  sending: false,
+  draft: '',
+})
+const heroClasses = classNames(ChatMain())
+console.log('hero surface:', ['csx-hero', 'csx-hero-card'].every(name => heroClasses.includes(name)) ? 'ok' : 'MISSING ' + heroClasses.join(','))
+const heroCard = Composer({ variant: 'hero' })
+const heroCardClasses = classNames(heroCard)
+const heroLabels = texts(heroCard)
+console.log('hero card:', heroCardClasses.includes('csx-card') ? 'ok' : 'MISSING csx-card',
+  '| tools:', ['◇ 深度思考', '🌐 智能搜索'].every(label => heroLabels.includes(label)) ? 'ok' : 'MISSING tools')
+const expandedHero = expandFns(heroCard)
+const expandedLabels = texts(expandedHero)
+console.log('hero send:', expandedLabels.includes('↑') ? 'ok' : 'MISSING send')
+
+chatStore.set({
+  messages: [
+    { id: 'u1', role: 'user', text: '你好' },
+    { id: 'a1', role: 'assistant', text: '你好呀', sources: [{ url: 'https://example.com', title: '示例' }] },
+  ],
+})
+const threadClasses = classNames(ChatMain())
+console.log('thread surface:',
+  ['csx-web-scroll', 'csx-web-col', 'csx-dock'].every(name => threadClasses.includes(name)) ? 'ok' : 'MISSING ' + threadClasses.join(','))
+const assistantRow = MessageRow({ message: chatStore.get().messages[1] })
+const flatAssistant = flatten(assistantRow)
+const noteText = texts(assistantRow)
+console.log('message footer:',
+  flatAssistant.some(entry => entry !== null && typeof entry === 'object' && entry.props != null && entry.props.className === 'csx-sources') ? 'sources ok' : 'MISSING sources',
+  '|', noteText.includes('1 个网页') ? 'count ok' : 'MISSING count',
+  '|', noteText.includes('内容由 AI 生成，请仔细甄别') ? 'note ok' : 'MISSING note')
+
 for (const dispose of effects) dispose()
 console.log('styles after dispose:', styleCount)
 console.log('ok')
