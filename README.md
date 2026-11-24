@@ -16,9 +16,9 @@
 
 ## 截图
 
-| Harness（未切换）左侧栏 | Chat 模式主视图 | Chat 模式左侧栏 |
-| --- | --- | --- |
-| ![Harness sidebar](docs/screenshots/01-harness-sidebar.jpg) | ![Chat main view](docs/screenshots/02-chat-main.jpg) | ![Chat sidebar](docs/screenshots/03-chat-sidebar.jpg) |
+| 刚安装、尚未登录 chat.deepseek.com | 登录之后的 Chat 主视图 |
+| --- | --- |
+| ![未登录](docs/screenshots/01-signed-out.png) | ![登录后](docs/screenshots/02-signed-in.png) |
 
 `docs/preview.html` 是脱离 DSH 的版式预览（同一套 CSS + 真实图标内联），改样式时直接打开对照。
 
@@ -56,7 +56,7 @@ npm 地址：<https://www.npmjs.com/package/dsh-chat-switch>
 在「添加插件」里填完整形式（换掉裸包名就能绕过 npm 未索引的问题）：
 
 ```
-github.com/Muhan-Q/dsh-chat-switch#v0.2.4
+github.com/Muhan-Q/dsh-chat-switch#v0.2.5
 ```
 
 ### 本地目录安装（开发用）
@@ -93,6 +93,8 @@ DSHM 每次启动都会用「种子 bundle + 用户行」**重拼** `profiles/on
 - **图标与排版来源**：logo、发送、上传、深度思考、智能搜索的图形直接取自 DSH 自己的图标表（`FISH_LOGO_PATH` 与 `send-outline` / `paperclip-outline` / `plus-outline` / `think-outline` / `globe-outline` / `stop-fill`），内联成 SVG，不自己画、不带第三方图标包；字号、行高、圆角、按钮盒模型一律走 DSH 的 `--dsh-content-font-size`、`--dsw-radius-*`、`--dsw-alias-*` token，与 Harness 本体一致。
 - **回答脚注**：助手消息下方先是「内容由 AI 生成，请仔细甄别」，再是「（站点 favicon ×3）N 个网页」胶囊，展开是来源列表（来自上游 `TOOL_SEARCH` 的 `results`，去重上限 20 条），和网页版一致；上游塞进正文的「搜索到 N 个网页」这类工具头会被过滤掉，不会跑到回答最前面。
 - **回答操作行**：每条回答下方一排网页版同款图标（图标取自 DSH 图标表 `copy-outline` / `refresh-outline` / `play-outline` / `share-outline`）。行为：**复制**写入剪贴板；**重新生成**丢掉这条回答、用同一条提问重发；**朗读**走浏览器 `speechSynthesis`（再点一次停止）；**分享**复制该会话的 `chat.deepseek.com` 链接。点赞/点踩未做——上游没有反馈接口，纯本地状态没有实际作用。
+- **附件**：拖拽文件到主列即可添加（遮罩与网页版同文案），也支持卡片左下「＋」选择文件；限制对齐网页版——单文件 100MB、一次最多 50 个。文本类附件（md / txt / json / csv / 代码）与 Word 文档（.docx）上传时会缓存在 Host 内存里；点输入框里或消息里的附件胶囊，会在 **Chat 主视图右侧停靠一个只读阅读器**（不遮住对话，关掉即恢复原宽）。Markdown 与 docx 按格式排版（标题、列表、加粗、引用），普通文本原样折行；全程只读，缓存上限 8MB / 32 条。
+- **面板跟随**：从插件页、插件市场等任何面板点「新网页会话」或会话列表，都会先把主面板切回 Chat，再打开对应对话。
 - **零第三方依赖**：客户端只 `require('react')`（Shell 内置种子模块），样式用 `--dsw-alias-*` 主题变量内联注入；Host 只用 Node 内置模块，服务通过 `ctx.get()` 取，不 import DSH 包，便于在端侧任何 profile 里加载。
 - **接口**（Host 侧）：
 
@@ -117,6 +119,9 @@ DSHM 每次启动都会用「种子 bundle + 用户行」**重拼** `profiles/on
 - chat.deepseek.com 的网页接口不是公开契约，站点改版可能让目录或消息读取失败；失败会在侧栏红框里原样给出服务端消息，不会静默。
 - `userToken` 与 Harness 的账号 grant（`api.deepseek.com` 用）是两套 token，不能互换；插件用「同一账号登录一次」的方式满足同账号，而不是复用 Harness 的 grant。
 - 发送与上传都要过 `DeepSeekHashV1` 工作量证明（difficulty 144000，单次约 10–25 秒）。Host 进程是 `--jitless`，跑不了 WebAssembly，所以 wasm 求解放在页面里：插件内嵌 chat 自家的 `sha3_wasm_bg.wasm`（26KB，base64），不发起跨域请求。
+- 阅读器是 Chat 面板内的停靠列，没有复用 DSH 的右侧栏：那个服务按会话作用域提供，Chat 模式下没有归属会话，调用会静默落空。
+- docx 的排版来自 `word/document.xml` 的段落样式（`outlineLvl` / 标题样式 / 编号），Word 里的浮动图片、表格合并单元格、页眉页脚不会显示。
+- 文本附件的预览正文存在 Host 内存（8MB / 32 条），重启 DSH 后旧链接失效，点开会提示重新上传；上传时每份文件仍要过一次工作量证明，所以单文件会有 10–20 秒等待，卡片里会显示「正在计算工作量证明…」。
 - 重启后若侧栏没有出现切换器，检查 DSH 启动日志里 `chat-switch` 行与 `/chat-switch/api/status` 是否可达。
 - 「新会话」的**键盘快捷键**由 Shell 直接走导航，不经过点击；用快捷键新建时模式不会自动跟随，点一下切换器即可回到 Harness。
 - 图标是 DSH 图标表里的原始路径，改名或重构 DSH 图标表时这里会跟着失效；`docs/preview.html` 是脱离 DSH 的版式预览，调样式时直接打开对照。

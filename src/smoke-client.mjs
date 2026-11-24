@@ -154,7 +154,7 @@ try {
 
 // The Chat surface renders in both shapes: a centred hero card when empty,
 // and the web-style column plus a docked card once there are messages.
-const { store: chatStore, Composer, ChatMain, MessageRow } = mod.exports.__internals
+const { store: chatStore, Composer, ChatMain, MessageRow, docxToMarkdown, previewFormat } = mod.exports.__internals
 const flatten = node => {
   if (node === null || node === undefined || typeof node !== 'object') return []
   if (Array.isArray(node)) return node.flatMap(flatten)
@@ -200,6 +200,33 @@ const iconSvgs = flatten(expandedHero)
     && entry.props.dangerouslySetInnerHTML.__html.includes('<svg'))
 console.log('hero card:', heroCardClasses.includes('csx-card') ? 'ok' : 'MISSING csx-card',
   '| tools:', ['深度思考', '智能搜索'].every(label => heroLabels.some(text => text.includes(label))) ? 'ok' : 'MISSING tools')
+const heroMain = ChatMain()
+const heroDrop = flatten(expandFns(heroMain))
+  .filter(entry => entry !== null && typeof entry === 'object' && entry.props !== undefined)
+const mainNode = heroDrop.find(entry => String(entry?.props?.className ?? '').includes('csx-main'))
+console.log('drop target:',
+  typeof mainNode?.props?.onDrop === 'function' && typeof mainNode?.props?.onDragOver === 'function'
+    ? 'ok' : 'MISSING onDrop/onDragOver',
+  '| upload limits:', /MAX_UPLOAD_BYTES = 100 \* 1024 \* 1024/.test(source) && /MAX_UPLOAD_FILES = 50/.test(source) ? 'ok' : 'MISSING limits',
+  '| drop css:', source.includes('.csx-drop {') ? 'ok' : 'MISSING css',
+  '| hero note:', source.includes('.csx-hero > .csx-msg-note { text-align:center') ? 'ok' : 'MISSING note')
+chatStore.set({ mode: 'chat', messages: [{ id: 'a' }] })
+chatStore.set(state => ({ docPreview: { name: 'x', url: 'u', text: 't', error: '', loading: false } }))
+console.log('store merge:', chatStore.get().mode === 'chat' && chatStore.get().messages.length === 1 && chatStore.get().docPreview?.name === 'x' ? 'ok' : 'LOST STATE')
+chatStore.set({ docPreview: null })
+{
+  const xml = '<w:p><w:pPr><w:outlineLvl w:val="0"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>标题</w:t></w:r></w:p>'
+    + '<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/></w:numPr></w:pPr><w:r><w:t>要点</w:t></w:r></w:p>'
+    + '<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>粗</w:t></w:r><w:r><w:t>体混排</w:t></w:r></w:p>'
+  const converted = docxToMarkdown(xml)
+  console.log('docx markdown:', converted.includes('# 标题') && converted.includes('- 要点') && converted.includes('**粗**') ? 'ok' : 'BAD ' + JSON.stringify(converted))
+  console.log('doc format:', previewFormat('a.md') === 'markdown' && previewFormat('a.docx') === 'markdown' && previewFormat('a.txt') === 'text' ? 'ok' : 'BAD')
+}
+console.log('doc panel:', source.includes('.csx-docpanel-body') && /docPreview/.test(source) ? 'ok' : 'MISSING')
+console.log('preview routes:',
+  /function isPreviewable\(name\)/.test(source) && /async function extractDocxText\(file\)/.test(source) ? 'ok' : 'MISSING docx helpers',
+  '| lightbox:', source.includes('.csx-lightbox-inner') ? 'ok' : 'MISSING inner',
+  '| upload note:', source.includes('csx-upload-note') ? 'ok' : 'MISSING note')
 console.log('hero icons:', iconSvgs.length >= 4 ? `ok (${iconSvgs.length} glyphs)` : `MISSING glyphs (${iconSvgs.length})`,
   '| hero mark:', classNames(expandFns(ChatMain())).includes('csx-hero-mark') ? 'ok' : 'MISSING whale')
 

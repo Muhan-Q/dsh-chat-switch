@@ -203,7 +203,14 @@ html[data-sidebar-collapsed="true"] .csx-overlay { display:none; }
 .csx-attach-remove { position:absolute; top:2px; right:2px; width:18px; height:18px; line-height:1; border:0; border-radius:50%;
   background: rgba(0,0,0,.45); color:#fff; font-size:12px; cursor:pointer; padding:0; }
 .csx-lightbox { position:fixed; top:0; right:0; bottom:0; left:0; z-index:90; background:rgba(0,0,0,.82); display:flex; align-items:center; justify-content:center; padding:16px; }
-.csx-lightbox-img { max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; }
+.csx-lightbox-img { width:auto; height:auto; max-width:min(1200px, 86vw); max-height:80vh; object-fit:contain;
+  border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,.45); }
+.csx-lightbox-inner { position:relative; display:flex; align-items:center; justify-content:center;
+  max-width:min(1200px, 86vw); max-height:80vh; }
+.csx-lightbox-close { position:absolute; top:-14px; right:-14px; width:32px; height:32px; display:flex; align-items:center;
+  justify-content:center; border:0; border-radius:999px; background:rgba(20,22,26,.86); color:#fff; font-size:19px;
+  line-height:1; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.35); z-index:2; }
+.csx-lightbox-close:hover { background:rgba(20,22,26,1); }
 /* ---- conversation management ---- */
 .csx-row-wrap { position:relative; }
 .csx-icon-btn[data-active="true"] { color: var(--dsw-alias-brand-primary, #4a7); border-color: currentColor; }
@@ -320,12 +327,65 @@ html[data-sidebar-collapsed="true"] .csx-overlay { display:none; }
 .csx-act:hover { background: var(--dsw-alias-interactive-bg-hover, rgba(127,127,127,.10));
   color: var(--dsw-alias-label-secondary, #666); }
 .csx-act[data-on="true"] { color: var(--dsw-alias-button-info-fill, #3964fe); }
+.csx-main-row { flex:1 1 auto; min-height:0; display:flex; align-items:stretch; }
+.csx-main-col { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; }
+.csx-docpanel { position:relative; flex:0 0 auto; width:min(460px, 42%); min-width:280px;
+  display:flex; flex-direction:column; min-height:0;
+  background: var(--dsw-specific-input-major, #fff);
+  border-left:0.5px solid var(--dsw-alias-border-l2, rgba(0,0,0,.08)); }
+.csx-docpanel-head { display:flex; align-items:center; gap:8px; height:44px; flex:0 0 auto; padding:0 8px 0 16px;
+  border-bottom:0.5px solid var(--dsw-alias-border-l2, rgba(0,0,0,.08)); }
+.csx-docpanel-name { flex:1; min-width:0; font-size:14px; line-height:20px; font-weight:500;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.csx-docpanel-close { width:28px; height:28px; flex:0 0 auto; border:0; border-radius:8px; background:transparent;
+  color: var(--dsw-alias-label-secondary, #6b7280); font-size:18px; line-height:1; cursor:pointer; }
+.csx-docpanel-close:hover { background: var(--dsw-alias-interactive-bg-hover, rgba(127,127,127,.12)); }
+.csx-docpanel-note { padding:14px 16px; font-size:13px; color: var(--dsw-alias-label-tertiary, #999); }
+.csx-docpanel-body { flex:1; min-height:0; margin:0; padding:14px 16px 24px; overflow:auto; white-space:pre-wrap;
+  word-break:break-word; font-family: var(--dsw-font-family); font-size:13px; line-height:22px;
+  color: var(--dsw-alias-label-primary, #111); }
+.csx-docpanel-body.csx-doc-md { white-space:normal; font-size:14px; line-height:24px; }
+.csx-doc-md .csx-md-h1, .csx-doc-md .csx-md-h2, .csx-doc-md .csx-md-h3 { margin:18px 0 8px; font-weight:600; line-height:1.4; }
+.csx-doc-md .csx-md-h1 { font-size:19px; }
+.csx-doc-md .csx-md-h2 { font-size:17px; }
+.csx-doc-md .csx-md-h3 { font-size:15px; }
+.csx-doc-md .csx-md-p { margin:8px 0; }
+.csx-doc-md .csx-md-label { margin:8px 0; }
+.csx-doc-md ul, .csx-doc-md ol { margin:8px 0; padding-left:22px; }
+.csx-doc-md li { margin:4px 0; }
+.csx-doc-md .csx-md-quote { margin:8px 0; padding-left:12px; border-left:3px solid var(--dsw-alias-border-l2, rgba(0,0,0,.1));
+  color: var(--dsw-alias-label-secondary, #555); }
+.csx-doc-md pre { margin:10px 0; padding:10px 12px; overflow:auto; border-radius:var(--dsw-radius-sm, 8px);
+  background: var(--dsw-alias-bg-layer-1, rgba(127,127,127,.08)); font-size:12px; line-height:20px; }
+.csx-doc-md code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12.5px; }
+.csx-doc-md table { border-collapse:collapse; margin:10px 0; font-size:13px; }
+.csx-doc-md th, .csx-doc-md td { border:0.5px solid var(--dsw-alias-border-l2, rgba(0,0,0,.15)); padding:5px 9px; text-align:left; }
 .csx-toast { position:absolute; left:50%; bottom:120px; transform:translateX(-50%); z-index:5;
   padding:6px 12px; border-radius:999px; font-size:12px; line-height:18px;
   background: var(--dsw-alias-bg-layer-1, rgba(0,0,0,.8)); color: var(--dsw-alias-label-primary, #fff);
   box-shadow: var(--dsw-elevation-soft, 0 2px 10px rgba(0,0,0,.12)); pointer-events:none; }
 .csx-msg-foot { display:flex; flex-direction:column; align-items:flex-start; gap:6px; margin-top:10px; }
 .csx-msg-note { font-size:12px; line-height:18px; color: var(--dsw-alias-label-tertiary, #999); }
+.csx-hero > .csx-msg-note { text-align:center; align-self:center; }
+.csx-file.csx-file-open { font: inherit; font-size:11px; background:none; cursor:pointer; text-align:left; }
+.csx-file.csx-file-open:hover { color: var(--dsw-alias-label-primary, #111);
+  border-color: var(--dsw-alias-border-l2, rgba(127,127,127,.45)); }
+.csx-drop { position:absolute; inset:0; z-index:20; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:10px; pointer-events:none; border-radius:12px; margin:8px;
+  background: color-mix(in srgb, var(--dsw-alias-bg-base, #fff) 82%, transparent);
+  border: 1.5px dashed var(--dsw-alias-border-l2, rgba(127,127,127,.5)); }
+.csx-drop-art { width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+  border-radius:12px; background: var(--dsw-specific-selector, rgba(127,127,127,.12));
+  color: var(--dsw-alias-label-secondary, #666); }
+.csx-drop-art .csx-ico { width:22px; height:22px; }
+.csx-drop-title { font-size:15px; line-height:22px; font-weight:500; color: var(--dsw-alias-label-primary, #111); }
+.csx-drop-hint { font-size:12px; line-height:18px; color: var(--dsw-alias-label-tertiary, #999); }
+.csx-upload-note { display:flex; align-items:center; gap:8px; margin:0 14px; padding:6px 0 0;
+  font-size:12px; line-height:18px; color: var(--dsw-alias-label-secondary, #6b7280); }
+.csx-spinner { width:12px; height:12px; flex:0 0 auto; border-radius:999px;
+  border:2px solid var(--dsw-alias-border-l2, rgba(127,127,127,.3));
+  border-top-color: var(--dsw-alias-button-info-fill, #3964fe); animation: csx-spin .7s linear infinite; }
+@keyframes csx-spin { to { transform: rotate(360deg); } }
 .csx-sources { font-size:12px; line-height:18px; color: var(--dsw-alias-label-secondary, #777); }
 .csx-sources summary { cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:6px;
   height:28px; padding:0 10px 0 6px; border-radius:999px; box-sizing:border-box;
@@ -362,6 +422,50 @@ html[data-sidebar-collapsed="true"] .csx-overlay { display:none; }
   </div>
 </div>
 </div></div><div class="stage"><div class="frame">
+<div class="frame-tag">未登录（提示居中）</div>
+<div class="csx-main">
+  <div class="csx-main-head"><span class="csx-main-title">Chat</span></div>
+  <div class="csx-hero">
+    <div class="csx-hero-head"><span class="csx-hero-mark"><span aria-hidden="true"><svg viewBox="0 0 23.16 17.04" width="100%" height="100%" fill="none"><path d="M22.9168 1.43018C22.6713 1.31018 22.5658 1.53918 22.4223 1.65519C22.3733 1.69269 22.3318 1.74169 22.2903 1.78669C21.9317 2.1697 21.5127 2.42121 20.9657 2.39121C20.1657 2.34621 19.4827 2.59771 18.8787 3.20973C18.7502 2.45521 18.3236 2.0047 17.6746 1.71569C17.3351 1.56568 16.9916 1.41518 16.7536 1.08867C16.5876 0.856163 16.5421 0.597155 16.4591 0.341647C16.4061 0.187643 16.3536 0.0301382 16.1761 0.00363739C15.9836 -0.0263635 15.9081 0.135141 15.8326 0.270145C15.5306 0.822162 15.4136 1.43018 15.4251 2.0462C15.4516 3.43174 16.0366 4.53527 17.1991 5.3203C17.3311 5.4103 17.3651 5.5003 17.3236 5.63181C17.2441 5.90231 17.1501 6.16482 17.0671 6.43533C17.0141 6.60784 16.9351 6.64584 16.7501 6.57033C16.1121 6.30383 15.5611 5.90931 15.074 5.4328C14.2475 4.63328 13.5 3.75075 12.568 3.05973C12.349 2.89822 12.13 2.74822 11.9034 2.60522C10.9524 1.68169 12.028 0.923165 12.277 0.833162C12.5375 0.739159 12.3675 0.41615 11.5259 0.42015C10.6844 0.42365 9.91439 0.705658 8.93286 1.08117C8.78935 1.13767 8.63835 1.17867 8.48384 1.21267C7.59332 1.04367 6.66829 1.00617 5.70226 1.11517C3.88321 1.31768 2.43016 2.1777 1.36213 3.64575C0.0790928 5.4103 -0.222916 7.41536 0.146595 9.50642C0.535106 11.7105 1.66014 13.535 3.38869 14.9616C5.18125 16.4406 7.24581 17.1657 9.60138 17.0266C11.0319 16.9441 12.6245 16.7526 14.421 15.2321C14.874 15.4576 15.3496 15.5476 16.1381 15.6151C16.7456 15.6716 17.3306 15.5851 17.7836 15.4911C18.4931 15.3411 18.4441 14.6841 18.1876 14.5636C16.1081 13.595 16.5646 13.9891 16.1496 13.67C17.2061 12.42 18.8202 10.1979 19.3182 7.17235C19.3672 6.83834 19.4297 6.36783 19.4222 6.09732C19.4182 5.93231 19.4562 5.86831 19.6447 5.84931C20.1657 5.78931 20.6712 5.64681 21.1357 5.3913C22.4833 4.65528 23.0268 3.44624 23.1548 1.9972C23.1738 1.77569 23.1508 1.54668 22.9168 1.43018ZM11.1749 14.4736C9.15936 12.889 8.18184 12.3675 7.77832 12.39C7.40081 12.4125 7.46881 12.8445 7.55182 13.126C7.63882 13.404 7.75182 13.5955 7.91033 13.8396C8.01983 14.0011 8.09533 14.2411 7.80083 14.4216C7.15181 14.8231 6.02327 14.2866 5.97027 14.2601C4.65673 13.4865 3.5587 12.4655 2.78467 11.069C2.03715 9.72493 1.60314 8.28289 1.53164 6.74384C1.51264 6.37233 1.62214 6.24082 1.99215 6.17332C2.47916 6.08332 2.98118 6.06432 3.46769 6.13582C5.52476 6.43633 7.27581 7.35586 8.74385 8.8129C9.58188 9.64243 10.2159 10.634 10.8689 11.6025C11.5634 12.631 12.3105 13.611 13.262 14.4146C13.598 14.6961 13.866 14.9101 14.1225 15.0681C13.349 15.1546 12.058 15.1731 11.1749 14.4746L11.1749 14.4736ZM12.141 8.25988C12.141 8.09488 12.273 7.96338 12.439 7.96338C12.4765 7.96338 12.5105 7.97088 12.541 7.98188C12.5825 7.99688 12.6205 8.01938 12.6505 8.05338C12.7035 8.10588 12.7335 8.18088 12.7335 8.25988C12.7335 8.42489 12.6015 8.55639 12.4355 8.55639C12.2695 8.55639 12.141 8.42489 12.141 8.25988ZM15.1415 9.79893C14.949 9.87793 14.7565 9.94544 14.5715 9.95294C14.2845 9.96794 13.9715 9.85143 13.8015 9.70893C13.5375 9.48742 13.3485 9.36342 13.2695 8.97691C13.2355 8.8119 13.2545 8.55639 13.2845 8.40989C13.3525 8.09438 13.277 7.89187 13.0545 7.70787C12.8735 7.55786 12.643 7.51636 12.39 7.51636C12.2955 7.51636 12.209 7.47486 12.1445 7.44136C12.039 7.38886 11.9519 7.25735 12.035 7.09585C12.0615 7.04335 12.19 6.91584 12.22 6.89334C12.5635 6.69784 12.9595 6.76184 13.326 6.90834C13.6655 7.04735 13.9225 7.30236 14.292 7.66287C14.6695 8.09838 14.7375 8.21838 14.9525 8.54539C15.1225 8.8009 15.277 9.06341 15.3831 9.36392C15.4471 9.55142 15.3641 9.70493 15.1415 9.79893Z" fill="currentColor"></path></svg></span></span><h1 class="csx-hero-title">登录后开始对话</h1></div>
+    <div class="csx-hero-card">
+      <div class="csx-card" data-variant="hero">
+        <textarea class="csx-textarea" rows="1" placeholder="给 DeepSeek 发送消息"></textarea>
+        <div class="csx-card-bar">
+          <label class="csx-tool csx-tool-icon" data-on="false"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M8 2V14" stroke="currentColor"></path><path d="M2 8H14" stroke="currentColor"></path></svg></span></label>
+          <button class="csx-tool" data-on="true" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M10.2854 5.71481C12.9673 8.39663 14.1182 11.5938 12.8562 12.8559C11.5942 14.1179 8.39706 12.9669 5.71518 10.2851C3.03333 7.60323 1.88236 4.40608 3.14441 3.14403C4.40644 1.882 7.6036 3.03297 10.2854 5.71481Z" stroke="currentColor"></path><path d="M10.2854 10.2851C7.6036 12.9669 4.40644 14.1179 3.14441 12.8559C1.88236 11.5938 3.03333 8.39663 5.71518 5.71481C8.39706 3.03297 11.5942 1.882 12.8562 3.14403C14.1182 4.40608 12.9673 7.60323 10.2854 10.2851Z" stroke="currentColor"></path><path d="M8.86291 8.0002C8.86291 8.47549 8.47762 8.86087 8.00224 8.86087C7.52694 8.86087 7.1416 8.47549 7.1416 8.0002C7.1416 7.52485 7.52694 7.13953 8.00224 7.13953C8.47762 7.13953 8.86291 7.52485 8.86291 8.0002Z" fill="currentColor"></path></svg></span>深度思考</button>
+          <button class="csx-tool" data-on="false" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M7.99986 14.0887C11.3626 14.0887 14.0886 11.3627 14.0886 7.99998C14.0886 4.63727 11.3626 1.91125 7.99986 1.91125C4.63715 1.91125 1.91113 4.63727 1.91113 7.99998C1.91113 11.3627 4.63715 14.0887 7.99986 14.0887Z" stroke="currentColor"></path><path d="M2.34619 8H13.6538" stroke="currentColor" stroke-linecap="square"></path><path d="M7.99976 14.0889C9.23509 14.0889 10.1743 11.3629 10.1743 8.00006C10.1743 4.63739 9.23509 1.91138 7.99976 1.91138" stroke="currentColor"></path><path d="M7.99973 14.0889C6.76445 14.0889 5.8252 11.3629 5.8252 8.00006C5.8252 4.63739 6.76445 1.91138 7.99973 1.91138" stroke="currentColor"></path></svg></span>智能搜索</button>
+          <span class="csx-spacer"></span>
+          <button class="csx-send" type="button"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M6.97211 1.94476C7.55785 1.35914 8.50767 1.35919 9.09343 1.94476L13.921 6.77228L13.2138 7.47939L8.38632 2.65187C8.19108 2.45682 7.87443 2.45677 7.67922 2.65187L2.74397 7.58711L2.03687 6.88L6.97211 1.94476Z" fill="currentColor"></path><path d="M7.97571 14.5732L8.02421 2.34139" stroke="currentColor"></path></svg></span></button>
+        </div>
+      </div></div>
+    <div class="csx-msg-note">在左侧「Chat 对话」里粘贴 chat.deepseek.com 的 userToken 即可登录。</div>
+  </div>
+</div>
+</div></div><div class="stage"><div class="frame">
+<div class="frame-tag">拖拽上传遮罩</div>
+<div class="csx-main">
+  <div class="csx-main-head"><span class="csx-main-title">Chat</span></div>
+  <div class="csx-hero">
+    <div class="csx-hero-head"><span class="csx-hero-mark"><span aria-hidden="true"><svg viewBox="0 0 23.16 17.04" width="100%" height="100%" fill="none"><path d="M22.9168 1.43018C22.6713 1.31018 22.5658 1.53918 22.4223 1.65519C22.3733 1.69269 22.3318 1.74169 22.2903 1.78669C21.9317 2.1697 21.5127 2.42121 20.9657 2.39121C20.1657 2.34621 19.4827 2.59771 18.8787 3.20973C18.7502 2.45521 18.3236 2.0047 17.6746 1.71569C17.3351 1.56568 16.9916 1.41518 16.7536 1.08867C16.5876 0.856163 16.5421 0.597155 16.4591 0.341647C16.4061 0.187643 16.3536 0.0301382 16.1761 0.00363739C15.9836 -0.0263635 15.9081 0.135141 15.8326 0.270145C15.5306 0.822162 15.4136 1.43018 15.4251 2.0462C15.4516 3.43174 16.0366 4.53527 17.1991 5.3203C17.3311 5.4103 17.3651 5.5003 17.3236 5.63181C17.2441 5.90231 17.1501 6.16482 17.0671 6.43533C17.0141 6.60784 16.9351 6.64584 16.7501 6.57033C16.1121 6.30383 15.5611 5.90931 15.074 5.4328C14.2475 4.63328 13.5 3.75075 12.568 3.05973C12.349 2.89822 12.13 2.74822 11.9034 2.60522C10.9524 1.68169 12.028 0.923165 12.277 0.833162C12.5375 0.739159 12.3675 0.41615 11.5259 0.42015C10.6844 0.42365 9.91439 0.705658 8.93286 1.08117C8.78935 1.13767 8.63835 1.17867 8.48384 1.21267C7.59332 1.04367 6.66829 1.00617 5.70226 1.11517C3.88321 1.31768 2.43016 2.1777 1.36213 3.64575C0.0790928 5.4103 -0.222916 7.41536 0.146595 9.50642C0.535106 11.7105 1.66014 13.535 3.38869 14.9616C5.18125 16.4406 7.24581 17.1657 9.60138 17.0266C11.0319 16.9441 12.6245 16.7526 14.421 15.2321C14.874 15.4576 15.3496 15.5476 16.1381 15.6151C16.7456 15.6716 17.3306 15.5851 17.7836 15.4911C18.4931 15.3411 18.4441 14.6841 18.1876 14.5636C16.1081 13.595 16.5646 13.9891 16.1496 13.67C17.2061 12.42 18.8202 10.1979 19.3182 7.17235C19.3672 6.83834 19.4297 6.36783 19.4222 6.09732C19.4182 5.93231 19.4562 5.86831 19.6447 5.84931C20.1657 5.78931 20.6712 5.64681 21.1357 5.3913C22.4833 4.65528 23.0268 3.44624 23.1548 1.9972C23.1738 1.77569 23.1508 1.54668 22.9168 1.43018ZM11.1749 14.4736C9.15936 12.889 8.18184 12.3675 7.77832 12.39C7.40081 12.4125 7.46881 12.8445 7.55182 13.126C7.63882 13.404 7.75182 13.5955 7.91033 13.8396C8.01983 14.0011 8.09533 14.2411 7.80083 14.4216C7.15181 14.8231 6.02327 14.2866 5.97027 14.2601C4.65673 13.4865 3.5587 12.4655 2.78467 11.069C2.03715 9.72493 1.60314 8.28289 1.53164 6.74384C1.51264 6.37233 1.62214 6.24082 1.99215 6.17332C2.47916 6.08332 2.98118 6.06432 3.46769 6.13582C5.52476 6.43633 7.27581 7.35586 8.74385 8.8129C9.58188 9.64243 10.2159 10.634 10.8689 11.6025C11.5634 12.631 12.3105 13.611 13.262 14.4146C13.598 14.6961 13.866 14.9101 14.1225 15.0681C13.349 15.1546 12.058 15.1731 11.1749 14.4746L11.1749 14.4736ZM12.141 8.25988C12.141 8.09488 12.273 7.96338 12.439 7.96338C12.4765 7.96338 12.5105 7.97088 12.541 7.98188C12.5825 7.99688 12.6205 8.01938 12.6505 8.05338C12.7035 8.10588 12.7335 8.18088 12.7335 8.25988C12.7335 8.42489 12.6015 8.55639 12.4355 8.55639C12.2695 8.55639 12.141 8.42489 12.141 8.25988ZM15.1415 9.79893C14.949 9.87793 14.7565 9.94544 14.5715 9.95294C14.2845 9.96794 13.9715 9.85143 13.8015 9.70893C13.5375 9.48742 13.3485 9.36342 13.2695 8.97691C13.2355 8.8119 13.2545 8.55639 13.2845 8.40989C13.3525 8.09438 13.277 7.89187 13.0545 7.70787C12.8735 7.55786 12.643 7.51636 12.39 7.51636C12.2955 7.51636 12.209 7.47486 12.1445 7.44136C12.039 7.38886 11.9519 7.25735 12.035 7.09585C12.0615 7.04335 12.19 6.91584 12.22 6.89334C12.5635 6.69784 12.9595 6.76184 13.326 6.90834C13.6655 7.04735 13.9225 7.30236 14.292 7.66287C14.6695 8.09838 14.7375 8.21838 14.9525 8.54539C15.1225 8.8009 15.277 9.06341 15.3831 9.36392C15.4471 9.55142 15.3641 9.70493 15.1415 9.79893Z" fill="currentColor"></path></svg></span></span><h1 class="csx-hero-title">你好，我能帮什么忙吗？</h1></div>
+    <div class="csx-hero-card">
+      <div class="csx-card" data-variant="hero">
+        <textarea class="csx-textarea" rows="1" placeholder="给 DeepSeek 发送消息"></textarea>
+        <div class="csx-card-bar">
+          <label class="csx-tool csx-tool-icon" data-on="false"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M8 2V14" stroke="currentColor"></path><path d="M2 8H14" stroke="currentColor"></path></svg></span></label>
+          <button class="csx-tool" data-on="true" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M10.2854 5.71481C12.9673 8.39663 14.1182 11.5938 12.8562 12.8559C11.5942 14.1179 8.39706 12.9669 5.71518 10.2851C3.03333 7.60323 1.88236 4.40608 3.14441 3.14403C4.40644 1.882 7.6036 3.03297 10.2854 5.71481Z" stroke="currentColor"></path><path d="M10.2854 10.2851C7.6036 12.9669 4.40644 14.1179 3.14441 12.8559C1.88236 11.5938 3.03333 8.39663 5.71518 5.71481C8.39706 3.03297 11.5942 1.882 12.8562 3.14403C14.1182 4.40608 12.9673 7.60323 10.2854 10.2851Z" stroke="currentColor"></path><path d="M8.86291 8.0002C8.86291 8.47549 8.47762 8.86087 8.00224 8.86087C7.52694 8.86087 7.1416 8.47549 7.1416 8.0002C7.1416 7.52485 7.52694 7.13953 8.00224 7.13953C8.47762 7.13953 8.86291 7.52485 8.86291 8.0002Z" fill="currentColor"></path></svg></span>深度思考</button>
+          <button class="csx-tool" data-on="false" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M7.99986 14.0887C11.3626 14.0887 14.0886 11.3627 14.0886 7.99998C14.0886 4.63727 11.3626 1.91125 7.99986 1.91125C4.63715 1.91125 1.91113 4.63727 1.91113 7.99998C1.91113 11.3627 4.63715 14.0887 7.99986 14.0887Z" stroke="currentColor"></path><path d="M2.34619 8H13.6538" stroke="currentColor" stroke-linecap="square"></path><path d="M7.99976 14.0889C9.23509 14.0889 10.1743 11.3629 10.1743 8.00006C10.1743 4.63739 9.23509 1.91138 7.99976 1.91138" stroke="currentColor"></path><path d="M7.99973 14.0889C6.76445 14.0889 5.8252 11.3629 5.8252 8.00006C5.8252 4.63739 6.76445 1.91138 7.99973 1.91138" stroke="currentColor"></path></svg></span>智能搜索</button>
+          <span class="csx-spacer"></span>
+          <button class="csx-send" type="button"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M6.97211 1.94476C7.55785 1.35914 8.50767 1.35919 9.09343 1.94476L13.921 6.77228L13.2138 7.47939L8.38632 2.65187C8.19108 2.45682 7.87443 2.45677 7.67922 2.65187L2.74397 7.58711L2.03687 6.88L6.97211 1.94476Z" fill="currentColor"></path><path d="M7.97571 14.5732L8.02421 2.34139" stroke="currentColor"></path></svg></span></button>
+        </div>
+      </div></div>
+  </div>
+  <div class="csx-drop">
+    <div class="csx-drop-art"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M12.75 4.5V9.5C12.75 10.7598 12.2496 11.968 11.3588 12.8588C10.468 13.7496 9.25978 14.25 8 14.25C6.74022 14.25 5.53204 13.7496 4.64124 12.8588C3.75045 11.968 3.25 10.7598 3.25 9.5V5C3.25 4.13805 3.59241 3.3114 4.2019 2.7019C4.8114 2.09241 5.63805 1.75 6.5 1.75C7.36195 1.75 8.1886 2.09241 8.7981 2.7019C9.40759 3.3114 9.75 4.13805 9.75 5V9.5C9.75 9.96413 9.56563 10.4092 9.23744 10.7374C8.90925 11.0656 8.46413 11.25 8 11.25C7.53587 11.25 7.09075 11.0656 6.76256 10.7374C6.43437 10.4092 6.25 9.96413 6.25 9.5V5.5" stroke="currentColor"></path></svg></div>
+    <div class="csx-drop-title">文件或图片拖动到此处即可添加</div>
+    <div class="csx-drop-hint">单个文件最大 100MB，一次最多 50 个</div>
+  </div>
+</div>
+</div></div><div class="stage"><div class="frame">
 <div class="frame-tag">对话态（web 栏 + dock）</div>
 <div class="csx-main">
   <div class="csx-main-head"><span class="csx-main-title">DSH 工作区无法选择</span><button class="csx-btn" type="button">在网页版打开</button></div>
@@ -395,6 +499,45 @@ html[data-sidebar-collapsed="true"] .csx-overlay { display:none; }
           <button class="csx-send" type="button"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M6.97211 1.94476C7.55785 1.35914 8.50767 1.35919 9.09343 1.94476L13.921 6.77228L13.2138 7.47939L8.38632 2.65187C8.19108 2.45682 7.87443 2.45677 7.67922 2.65187L2.74397 7.58711L2.03687 6.88L6.97211 1.94476Z" fill="currentColor"></path><path d="M7.97571 14.5732L8.02421 2.34139" stroke="currentColor"></path></svg></span></button>
         </div>
       </div></div></div>
+</div>
+</div></div><div class="stage"><div class="frame">
+<div class="frame-tag">附件只读阅读器（点击文字类附件；停靠在右侧，不遮主视图）</div>
+<div class="csx-main">
+  <div class="csx-main-head"><span class="csx-main-title">测试识别截图</span><button class="csx-btn" type="button">在网页版打开</button></div>
+  <div class="csx-main-row">
+    <div class="csx-main-col">
+      <div class="csx-web-scroll"><div class="csx-web-col">
+        <div class="csx-msg" data-role="user"><div class="csx-bubble"><div class="csx-md-body">测试文件预览，无需识别文件</div></div></div>
+      </div></div>
+      <div class="csx-dock"><div class="csx-web-col">
+      <div class="csx-card" data-variant="dock">
+        <textarea class="csx-textarea" rows="1" placeholder="给 DeepSeek 发送消息"></textarea>
+        <div class="csx-card-bar">
+          <label class="csx-tool csx-tool-icon" data-on="false"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M8 2V14" stroke="currentColor"></path><path d="M2 8H14" stroke="currentColor"></path></svg></span></label>
+          <button class="csx-tool" data-on="true" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M10.2854 5.71481C12.9673 8.39663 14.1182 11.5938 12.8562 12.8559C11.5942 14.1179 8.39706 12.9669 5.71518 10.2851C3.03333 7.60323 1.88236 4.40608 3.14441 3.14403C4.40644 1.882 7.6036 3.03297 10.2854 5.71481Z" stroke="currentColor"></path><path d="M10.2854 10.2851C7.6036 12.9669 4.40644 14.1179 3.14441 12.8559C1.88236 11.5938 3.03333 8.39663 5.71518 5.71481C8.39706 3.03297 11.5942 1.882 12.8562 3.14403C14.1182 4.40608 12.9673 7.60323 10.2854 10.2851Z" stroke="currentColor"></path><path d="M8.86291 8.0002C8.86291 8.47549 8.47762 8.86087 8.00224 8.86087C7.52694 8.86087 7.1416 8.47549 7.1416 8.0002C7.1416 7.52485 7.52694 7.13953 8.00224 7.13953C8.47762 7.13953 8.86291 7.52485 8.86291 8.0002Z" fill="currentColor"></path></svg></span>深度思考</button>
+          <button class="csx-tool" data-on="false" type="button"><span class="1.1" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M7.99986 14.0887C11.3626 14.0887 14.0886 11.3627 14.0886 7.99998C14.0886 4.63727 11.3626 1.91125 7.99986 1.91125C4.63715 1.91125 1.91113 4.63727 1.91113 7.99998C1.91113 11.3627 4.63715 14.0887 7.99986 14.0887Z" stroke="currentColor"></path><path d="M2.34619 8H13.6538" stroke="currentColor" stroke-linecap="square"></path><path d="M7.99976 14.0889C9.23509 14.0889 10.1743 11.3629 10.1743 8.00006C10.1743 4.63739 9.23509 1.91138 7.99976 1.91138" stroke="currentColor"></path><path d="M7.99973 14.0889C6.76445 14.0889 5.8252 11.3629 5.8252 8.00006C5.8252 4.63739 6.76445 1.91138 7.99973 1.91138" stroke="currentColor"></path></svg></span>智能搜索</button>
+          <span class="csx-spacer"></span>
+          <button class="csx-send" type="button"><span class="csx-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.25"><path d="M6.97211 1.94476C7.55785 1.35914 8.50767 1.35919 9.09343 1.94476L13.921 6.77228L13.2138 7.47939L8.38632 2.65187C8.19108 2.45682 7.87443 2.45677 7.67922 2.65187L2.74397 7.58711L2.03687 6.88L6.97211 1.94476Z" fill="currentColor"></path><path d="M7.97571 14.5732L8.02421 2.34139" stroke="currentColor"></path></svg></span></button>
+        </div>
+      </div></div></div>
+    </div>
+    <aside class="csx-docpanel">
+      <div class="csx-docpanel-head"><span class="csx-docpanel-name">脉烬天录_番茄向改造与推进大纲.md</span><button class="csx-docpanel-close" type="button">×</button></div>
+      <div class="csx-docpanel-body csx-doc-md">
+        <h1 class="csx-md-h1">《脉烬天录》番茄向改造 · 设定梳理与分阶段推进大纲</h1>
+        <p class="csx-md-p">整理范围：本会话全部讨论——三平台热榜对标、原作设定盘点、番茄向改造方案。</p>
+        <h2 class="csx-md-h2">一、三平台热榜对标结论</h2>
+        <h3 class="csx-md-h3">1.1 番茄 · 巅峰/在读榜</h3>
+        <ul class="csx-md-list">
+          <li>都市高武/诡异：现代背景 + 超凡，强悬疑钩子</li>
+          <li>悬疑脑洞/无限流：副本、求生、智战，节奏极快</li>
+          <li>游戏入侵/面板升级：系统、数据面板、重生抢机缘</li>
+        </ul>
+        <p class="csx-md-p"><strong>番茄特征：</strong>开局即冲突，三章内出钩子；能力可视化、升级即时反馈。</p>
+        <div class="csx-md-quote">定位：保留原作世界观与核心名词，重做前端包装、金手指与爽点节奏。</div>
+      </div>
+    </aside>
+  </div>
 </div>
 </div></div>
 <script>

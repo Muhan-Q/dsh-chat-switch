@@ -38,6 +38,15 @@ console.log('probe   ', await call('/probe'))
 console.log('bad tok ', await call('/token', { method: 'POST', body: { token: 'not-a-real-token' } }))
 console.log('sessions', await call('/sessions'))
 console.log('unknown ', await call('/nope'))
+const saved = await call('/file/preview', { method: 'POST', body: { name: 'notes.md', text: '# 预览内容\n第二行' } })
+const savedUrl = JSON.parse(saved.body.replace('…', '').length ? saved.body : '{}')
+console.log('preview save', saved.status, saved.body.slice(0, 120))
+const previewId = (saved.body.match(/\/file\/preview\/([0-9a-f-]{36})/) ?? [])[1]
+if (previewId !== undefined) {
+  const text = await fetch(`${base}/file/preview/${previewId}`).then(res => res.text())
+  console.log('preview read', text.includes('预览内容') ? 'ok' : 'MISMATCH', JSON.stringify(text.slice(0, 40)))
+}
+console.log('preview miss', (await call('/file/preview/00000000-0000-0000-0000-000000000000')).status)
 server.close()
 for (const dispose of disposers) dispose?.()
 console.log('ok')
