@@ -1,6 +1,6 @@
 {
   "name": "dsh-chat-switch",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Chat ⇄ Harness switch in the DSH sidebar with a chat.deepseek.com bridge",
   "keywords": [
     "dsh",
@@ -55,14 +55,14 @@
     "docs/notes-chat-api.md",
     "docs/screenshots"
   ],
-  "scripts": {
-    "check": "node --check lib/index.js && node --check lib/client.js"
-  },
   "engines": {
     "node": ">=20"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "check": "node --check lib/index.js && node --check lib/client.js"
   }
 }

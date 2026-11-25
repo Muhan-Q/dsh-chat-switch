@@ -42,6 +42,10 @@ const ctx = {
 const sandbox = {
   window: {
     __ModuleLoader__: { load: ({ id, factory }) => { sandbox.__module = { id, exports: factory(spec => (spec === 'react' ? fakeReact : (() => { throw new Error(`unexpected require: ${spec}`) })())) } } },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    matchMedia: () => ({ matches: false, addEventListener: () => {}, removeEventListener: () => {} }),
+    location: { origin: 'http://127.0.0.1:3120' },
     localStorage: {
       getItem: key => (storage.has(key) ? storage.get(key) : null),
       setItem: (key, value) => { storage.set(key, value) },
@@ -73,6 +77,7 @@ const sandbox = {
   URL,
 }
 
+Object.assign(sandbox, { TextEncoder, TextDecoder, DecompressionStream, Response, Blob, atob, btoa })
 vm.createContext(sandbox)
 vm.runInContext(source, sandbox, { filename: 'client.js' })
 
@@ -218,7 +223,7 @@ chatStore.set({ docPreview: null })
   const xml = '<w:p><w:pPr><w:outlineLvl w:val="0"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>标题</w:t></w:r></w:p>'
     + '<w:p><w:pPr><w:numPr><w:ilvl w:val="0"/></w:numPr></w:pPr><w:r><w:t>要点</w:t></w:r></w:p>'
     + '<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>粗</w:t></w:r><w:r><w:t>体混排</w:t></w:r></w:p>'
-  const converted = docxToMarkdown(xml)
+  const converted = await docxToMarkdown(xml, async () => ({ dataUrl: '', unsupported: '' }))
   console.log('docx markdown:', converted.includes('# 标题') && converted.includes('- 要点') && converted.includes('**粗**') ? 'ok' : 'BAD ' + JSON.stringify(converted))
   console.log('doc format:', previewFormat('a.md') === 'markdown' && previewFormat('a.docx') === 'markdown' && previewFormat('a.txt') === 'text' ? 'ok' : 'BAD')
 }
@@ -259,6 +264,67 @@ console.log('answer actions:',
     && typeof child.props?.dangerouslySetInnerHTML?.__html === 'string')).length === 4 ? 'glyphs ok' : 'MISSING glyphs',
   '|', !flatten(expandFns(MessageRow({ message: chatStore.get().messages[1], streaming: true })))
     .some(entry => entry !== null && typeof entry === 'object' && entry.props?.className === 'csx-actions') ? 'hidden while streaming' : 'shown while streaming')
+
+// A centered paragraph that only holds a picture must render <img>, not raw markdown.
+{
+  const blocks = mod.exports.__internals.renderMarkdown('<p align="center">![](data:image/png;base64,AAAA)</p>')
+  const wrapper = blocks.find(b => b && b.props && b.props.className === 'csx-md-align-center')
+  const inlineImg = JSON.stringify(wrapper ?? null).includes('"type":"img"')
+  console.log('inline picture in aligned block:', inlineImg ? 'ok' : 'MISSING')
+}
+
+// docx: pictures become data-URL images, w:jc becomes alignment wrappers.
+{
+  const docx = '<w:document><w:body>'
+    + '<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:t>居中标题</w:t></w:r></w:p>'
+    + '<w:p><w:r><w:t>正文</w:t></w:r><w:r><w:drawing><a:blip r:embed="rId7"/></w:drawing></w:r></w:p>'
+    + '<w:tbl><w:tblPr><w:jc w:val="center"/></w:tblPr>'
+    + '<w:tr><w:tc><w:r><w:t>A</w:t></w:r></w:tc><w:tc><w:r><w:t>B</w:t></w:r></w:tc></w:tr>'
+    + '<w:tr><w:tc><w:r><w:t>1</w:t></w:r></w:tc><w:tc><w:r><w:t>2</w:t></w:r></w:tc></w:tr></w:tbl>'
+    + '</w:body></w:document>'
+  const md = await docxToMarkdown(docx, async id => (id === 'rId7' ? { dataUrl: 'data:image/png;base64,AAAA', unsupported: '' } : { dataUrl: '', unsupported: '' }))
+  const blocks = mod.exports.__internals.renderMarkdown(md)
+  const centered = blocks.some(b => b && b.props && b.props.className === 'csx-md-align-center')
+  const wrap = blocks.find(b => b && b.props && String(b.props.className || '').includes('csx-md-tablewrap'))
+  const img = blocks.some(b => b && b.type === 'img' && String(b.props.src).startsWith('data:image'))
+  console.log('docx image:', img ? 'ok' : 'MISSING', '| centered block:', centered ? 'ok' : 'MISSING',
+    '| table align:', wrap && wrap.props.className.includes('align-center') ? 'ok' : 'MISSING')
+}
+
+// Tables: markdown rows become a real table, docx w:tbl becomes GFM.
+{
+  const blocks = mod.exports.__internals.renderMarkdown('| A | B |\n| --- | --- |\n| 1 | 2 |')
+  const wrap = blocks.find(b => b && b.type === 'div' && b.props && b.props.className === 'csx-md-tablewrap')
+  const table = wrap && wrap.children.find(c => c && c.type === 'table')
+  const thead = table && table.children.find(c => c && c.type === 'thead')
+  const tbody = table && table.children.find(c => c && c.type === 'tbody')
+  const rows = tbody ? tbody.children.flat(Infinity).filter(c => c && c.type === 'tr').length : 0
+  const headRows = thead ? thead.children.flat(Infinity).filter(c => c && c.type === 'tr').length : 0
+  console.log('table:', wrap ? 'ok' : 'MISSING', '| thead rows', headRows, '| tbody rows', rows)
+}
+{
+  const xml = '<w:document><w:body><w:p><w:r><w:t>标题</w:t></w:r></w:p>'
+    + '<w:tbl><w:tr><w:tc><w:r><w:t>列1</w:t></w:r></w:tc><w:tc><w:r><w:t>列2</w:t></w:r></w:tc></w:tr>'
+    + '<w:tr><w:tc><w:r><w:t>a</w:t></w:r></w:tc><w:tc><w:r><w:t>b</w:t></w:r></w:tc></w:tr></w:tbl></w:body></w:document>'
+  const md = await mod.exports.__internals.docxToMarkdown(xml, async () => '')
+  const ok = md.includes('| 列1 | 列2 |') && md.includes('| --- | --- |') && md.includes('| a | b |')
+  console.log('docx table:', ok ? 'ok' : 'FAILED', '|', JSON.stringify(md.slice(0, 60)))
+}
+
+// Optional: parse a real .docx and report what survived (REAL_DOCX=/path/to.docx).
+if (process.env.REAL_DOCX) {
+  const { readFileSync } = await import('node:fs')
+  const bytes = readFileSync(process.env.REAL_DOCX)
+  const file = new File([bytes], 'report.docx')
+  const started = Date.now()
+  const md = await mod.exports.__internals.extractDocxText(file)
+  const images = (md.match(/!\[\]\(data:image\//g) || []).length
+  const vectorNotes = (md.match(/（EMF 矢量图/g) || []).length
+  const tooLarge = (md.match(/图片过大/g) || []).length
+  const tableLines = (md.match(/^\|/gm) || []).length
+  console.log('real docx:', (bytes.length / 1024 / 1024).toFixed(1) + 'MB', '| parsed in', Date.now() - started, 'ms',
+    '| images', images, '| emf notes', vectorNotes, '| too-large', tooLarge, '| table lines', tableLines)
+}
 
 for (const dispose of effects) dispose()
 console.log('styles after dispose:', styleCount)
